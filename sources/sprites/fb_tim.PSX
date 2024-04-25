@@ -1,5 +1,7 @@
 [TIM Files]
-File_0=C:\Users\myale\Documents\Perso\PSX-Dev\WizGems\sources\sprites\bibi_b.TIM
+File_0=C:\Users\myale\Documents\Perso\PSX-Dev\WizGems\DATA\BIBI_O.TIM
+File_1=C:\Users\myale\Documents\Perso\PSX-Dev\WizGems\sources\sprites\Background_Up.TIM
+File_2=C:\Users\myale\Documents\Perso\PSX-Dev\WizGems\sources\sprites\Background_Bottom.TIM
 [Graphics Mode]
 Width=320
 Height=256

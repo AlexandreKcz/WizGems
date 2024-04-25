@@ -76,7 +76,7 @@ void InitializeScreen() {
 	GsInitGraph(SCREEN_WIDTH, SCREEN_HEIGHT, GsINTER|GsOFSGPU, 1, 0); //Set up interlation..
 	GsDefDispBuff(0, 0, 0, SCREEN_HEIGHT);	//..and double buffering.
 	InitializeOrderingTable();
-	color_create(125, 0, 0, &systemBackgroundColor);
+	color_create(0, 0, 0, &systemBackgroundColor);
 }
 
 void InitializeHeap() {

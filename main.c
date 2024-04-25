@@ -14,8 +14,8 @@ int box_x, box_y;
 
 int cnt = 0;
 
-u_long* data[3];
-Sprite* sprites[2];
+u_long* data[6];
+Sprite* sprites[4];
 
 int main() {
     Initialize();
@@ -42,9 +42,13 @@ void Initialize() {
 void LoadCDData(){
     cd_open();
     cd_read_file("BIBI_O.TIM", &data[1]);
+    cd_read_file("BG_BO.TIM", &data[2]);
+    cd_read_file("BG_UP.TIM", &data[3]);
     cd_close();
 
     sprite_create((u_char *)data[1], 128, 128, &sprites[0]);
+    sprite_create((u_char *)data[2], 0, 0, &sprites[1]);
+    sprite_create((u_char *)data[3], 0, 0, &sprites[2]);
 
     printf(" LoadCD Done \n");
 }
@@ -58,6 +62,21 @@ void Start(){
     sprites[0]->mx = sprites[0]->w / 2;
     sprites[0]->my = sprites[0]->h / 2;
     sprites[0]->scalex = 4096;
+
+    sprites[1]->x = 0;
+    sprites[1]->y = 94;
+    //sprites[1]->w = 320;
+    //sprites[1]->h = 46;
+
+    //sprites[1]->scalex = 4096;
+    //sprites[1]->scaley = 4096;
+
+    sprites[2]->x = 0;
+    sprites[2]->y = 0;
+    //sprites[1]->w = 320;
+    //sprites[1]->h = 50;
+    //sprites[2]->scalex = 4096;
+    //sprites[2]->scaley = 4096;
 }
 
 void Update(){
@@ -96,4 +115,6 @@ void Draw() {
     FntPrint("Frame : %d", cnt++);
     //drawBox(box);
     draw_sprite(sprites[0]);
+    draw_sprite(sprites[1]);
+    draw_sprite(sprites[2]);
 }
