@@ -55,6 +55,10 @@ void Start(){
 
     box = createBox(createColor(255, 255, 255), 128, 128, 164, 164);
 
+    sprites[0]->mx = sprites[0]->w / 2;
+    sprites[0]->my = sprites[0]->h / 2;
+    sprites[0]->scalex = 4096;
+
     printf(" Start Function Done \n");
 }
 
@@ -77,11 +81,13 @@ void Update(){
     }
 
     if(padCheck(Pad1Right)){
+        sprites[0]->scalex = 4096;
         box_x += 2;
         box = moveBox(box, box_x, box_y);
     }
 
     if(padCheck(Pad1Left)){
+        sprites[0]->scalex = -4096;
         box_x -= 2;
         box = moveBox(box, box_x, box_y);
     }
@@ -94,6 +100,6 @@ void Update(){
 
 void Draw() {
     //FntPrint("Frame : %d", cnt++);
-    drawBox(box);
+    //drawBox(box);
     draw_sprite(sprites[0]);
 }
