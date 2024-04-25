@@ -1,14 +1,19 @@
-#include "constants.h"
+#pragma once
+
+#include <stdlib.h>
+#include <libspu.h>
+#include <libds.h>
+#include <libgs.h>
 #include <stdio.h>
+#include <string.h>
+
 #define SECTOR 2048
 
-int didInitDs = 0;
+int 		  didInitDs = 0;
 
-void ReadCDInit() {
-	printf("\nReserving 1024KB (1,048,576 Bytes) RAM... \n");
-    InitHeap3((void*)0x800F8000, 0x00100000);
-    printf("Success!\n");
-}
+SpuCommonAttr l_c_attr;
+SpuVoiceAttr  g_s_attr;
+unsigned long l_vag1_spu_addr;
 
 void cd_open() {
 	if(!didInitDs) {
@@ -68,5 +73,4 @@ void cd_read_file(unsigned char* file_path, u_long** file) {
 	free3(file_path_raw);
 	free3(sectors_size);
 	free3(temp_file_info);
-
 }

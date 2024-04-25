@@ -1,116 +1,114 @@
 #pragma once
 
-#include <stdlib.h>
 #include <stdio.h>
-#include <libgte.h>
-#include <libgpu.h>
-#include <libgs.h>
 #include <libetc.h>
-#include <libspu.h>
-#include <libds.h>
-#include <string.h>
-#include <sys/types.h>
+#include <libgs.h>
 
-void clear_vram();
 
-//Screen res and Dither
+#include "2D.c"
+
+#define OT_LENGTH 1
+#define PACKETMAX 300
+#define __ramsize   0x00200000
+#define __stacksize 0x00004000
+
+#define SCREEN_MODE_PAL 0
+#define SCREEN_MODE_NTSC 1
+
+#define DEBUG 1
+
 int SCREEN_WIDTH, SCREEN_HEIGHT;
-#define CENTERX SCREEN_WIDTH/2
-#define CENTERY SCREEN_HEIGHT/2
-#define DITHER 1
+GsOT orderingTable[2];
+GsOT_TAG  	  minorOrderingTable[2][1<<OT_LENGTH];
+short currentBuffer;
+Color* 		  systemBackgroundColor;
+PACKET GPUOutputPacket[2][PACKETMAX];
 
-#define OT_LENGTH 12
-#define OT_ENTRIES 1<<OT_LENGTH
-#define PACKETMAX 2048
-
-typedef struct {
-    int r;
-    int g;
-    int b;
-} Color;
-
-struct {
-    VECTOR position;
-    SVECTOR rotation;
-    GsCOORDINATE2 coord2;
-} Camera;
-
-GsOT    orderingTable[2];
-GsOT    orderingTable_TAG[2][OT_ENTRIES];
-int     myActiveBuff = 0;
-PACKET  GPUOutPacket[2][PACKETMAX*24];
-Color   BGColor;
-
-Color createColor(int r, int g, int b) {
-    Color color = {.r = r, .g = g, .b = b};
-    return color;
-}
-
-void setBGColor (int r, int g, int b) {
-    BGColor = createColor(r, g, b);
-}
-
-void initializeScreen() {
-    ResetGraph(0);
-
-    if (*(char *)0xbfc7ff52 == 'E'){
-        //PAL Mode
-        SCREEN_WIDTH = 320;
+void setScreenMode(int mode) {
+	if (mode == SCREEN_MODE_PAL) { // SCEE string address
+    	// PAL MODE
+    	SCREEN_WIDTH = 320;
     	SCREEN_HEIGHT = 256;
-    	printf("Setting the PlayStation Video Mode to (PAL %dx%d)\n",SCREEN_WIDTH,SCREEN_HEIGHT);
+    	if (DEBUG) printf("Setting the PlayStation Video Mode to (PAL %dx%d)\n",SCREEN_WIDTH,SCREEN_HEIGHT,")");
     	SetVideoMode(1);
-    	printf("Video Mode is (%ld)\n",GetVideoMode());
-    } else {
-        // NTSC Mode
+    	if (DEBUG) printf("Video Mode is (%d)\n",GetVideoMode());
+   	} else {
+     	// NTSC MODE
      	SCREEN_WIDTH = 320;
      	SCREEN_HEIGHT = 240;
-     	printf("Setting the PlayStation Video Mode to (NTSC %dx%d)\n",SCREEN_WIDTH,SCREEN_HEIGHT);
+     	if (DEBUG) printf("Setting the PlayStation Video Mode to (NTSC %dx%d)\n",SCREEN_WIDTH,SCREEN_HEIGHT,")");
      	SetVideoMode(0);
-     	printf("Video Mode is (%ld)\n",GetVideoMode());
-    }
-
-    GsInitGraph(SCREEN_WIDTH, SCREEN_HEIGHT, GsINTER|GsOFSGPU, 1, 0);
-    GsDefDispBuff(0, 0, 0, SCREEN_HEIGHT);
-
-    orderingTable[0].length = OT_LENGTH;
-    orderingTable[1].length = OT_LENGTH;
-    orderingTable[0].org = orderingTable_TAG[0];
-    orderingTable[1].org = orderingTable_TAG[1];
-
-    GsClearOt(0, 0, &orderingTable[0]);
-    GsClearOt(0, 0, &orderingTable[1]);
-
-    FntLoad(960, 0);
-    FntOpen(-CENTERX + 7, -CENTERY + 15, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 512);
-
-    GsInit3D();
-    GsSetProjection(CENTERX);
-    GsInitCoordinate2(WORLD, &Camera.coord2);
-
-    //0 : no fog || 1 : no fog
-    GsSetLightMode(0);
+     	if (DEBUG) printf("Video Mode is (%d)\n",GetVideoMode());
+   }
+	GsInitGraph(SCREEN_WIDTH, SCREEN_HEIGHT, GsINTER|GsOFSGPU, 1, 0);
+	GsDefDispBuff(0, 0, 0, SCREEN_HEIGHT);
 }
 
-void clear_vram() {
+void InitializeOrderingTable(){
+    GsClearOt(0,0,&orderingTable[GsGetActiveBuff()]);
+
+    // initialise the ordering tables
+    orderingTable[0].length = OT_LENGTH;
+    orderingTable[1].length = OT_LENGTH;
+    orderingTable[0].org = minorOrderingTable[0];
+    orderingTable[1].org = minorOrderingTable[1];
+
+    GsClearOt(0,0,&orderingTable[0]);
+    GsClearOt(0,0,&orderingTable[1]);
+}
+
+void ClearVram() {
     RECT rectTL;
     setRECT(&rectTL, 0, 0, 1024, 512);
     ClearImage2(&rectTL, 0, 0, 0);
     DrawSync(0);
-    return;  
+    return;
 }
 
-void clear_display() {
-    myActiveBuff = GsGetActiveBuff();
-    GsSetWorkBase((PACKET*) GPUOutPacket[myActiveBuff]);
-    GsClearOt(0, 0, &orderingTable[myActiveBuff]);
+//Initialize screen, 
+void InitializeScreen() {
+	if (*(char *)0xbfc7ff52=='E') setScreenMode(SCREEN_MODE_PAL);
+   	else setScreenMode(SCREEN_MODE_NTSC);
+   	
+    SetDispMask(1);
+	ResetGraph(0);
+	ClearVram();
+	GsInitGraph(SCREEN_WIDTH, SCREEN_HEIGHT, GsINTER|GsOFSGPU, 1, 0); //Set up interlation..
+	GsDefDispBuff(0, 0, 0, SCREEN_HEIGHT);	//..and double buffering.
+	InitializeOrderingTable();
+	color_create(125, 0, 0, &systemBackgroundColor);
+}
+
+void InitializeHeap() {
+	printf("\nReserving 1024KB (1,048,576 Bytes) RAM... \n");
+    InitHeap3((void*)0x800F8000, 0x00100000);
+    printf("Success!\n");
+}
+
+void InitializeDebugFont() {
+	FntLoad(960, 256);
+	SetDumpFnt(FntOpen(5, 20, 320, 240, 0, 512)); //Sets the dumped font for use with FntPrint();
 }
 
 void Display() {
+	currentBuffer = GsGetActiveBuff();
+	DrawSync(0);
+	VSync(0);
+	GsSwapDispBuff();
+	printf("Before draw OT");
+	GsSortClear(systemBackgroundColor->r, systemBackgroundColor->g, systemBackgroundColor->b, &orderingTable[currentBuffer]);
+	GsDrawOt(&orderingTable[currentBuffer]);
+}
 
-    FntFlush(-1);
-    VSync(0);
-    GsSwapDispBuff();
+void ClearDisplay() {
+	currentBuffer = GsGetActiveBuff();
+	FntFlush(-1);
+	GsSetWorkBase((PACKET*)GPUOutputPacket[currentBuffer]);
+	GsClearOt(0, 0, &orderingTable[currentBuffer]);
+}
 
-    GsSortClear(BGColor.r, BGColor.g, BGColor.b, &orderingTable[myActiveBuff]);
-    GsDrawOt(&orderingTable[myActiveBuff]);
+void draw_sprite(Sprite *sprite) {
+	printf("ask for drawing sprites\n");
+	currentBuffer = GsGetActiveBuff();
+	GsSortSprite(sprite, &orderingTable[currentBuffer], 0);
 }
