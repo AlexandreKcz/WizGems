@@ -58,17 +58,11 @@ void Start(){
     sprites[0]->mx = sprites[0]->w / 2;
     sprites[0]->my = sprites[0]->h / 2;
     sprites[0]->scalex = 4096;
-
-    printf(" Start Function Done \n");
 }
 
 void Update(){
 
-    printf(" Update Function \n");
-
     padUpdate();
-
-    printf(" Pad Update Done \n");
 
     if(padCheck(Pad1Up)){
         box_y -= 2;
@@ -99,7 +93,7 @@ void Update(){
 }
 
 void Draw() {
-    //FntPrint("Frame : %d", cnt++);
+    FntPrint("Frame : %d", cnt++);
     //drawBox(box);
     draw_sprite(sprites[0]);
 }

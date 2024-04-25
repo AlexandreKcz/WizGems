@@ -95,7 +95,6 @@ void Display() {
 	DrawSync(0);
 	VSync(0);
 	GsSwapDispBuff();
-	printf("Before draw OT");
 	GsSortClear(systemBackgroundColor->r, systemBackgroundColor->g, systemBackgroundColor->b, &orderingTable[currentBuffer]);
 	GsDrawOt(&orderingTable[currentBuffer]);
 }
@@ -108,7 +107,6 @@ void ClearDisplay() {
 }
 
 void draw_sprite(Sprite *sprite) {
-	printf("ask for drawing sprites\n");
 	currentBuffer = GsGetActiveBuff();
 	GsSortSprite(sprite, &orderingTable[currentBuffer], 0);
 }
