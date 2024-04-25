@@ -64,7 +64,7 @@ void Start(){
     sprites[0]->scalex = 4096;
 
     sprites[1]->x = 0;
-    sprites[1]->y = 94;
+    sprites[1]->y = 194;
     //sprites[1]->w = 320;
     //sprites[1]->h = 46;
 
@@ -107,12 +107,16 @@ void Update(){
 
 
     box = moveBox(box, box_x, box_y);
+
+    if(box_x < -30) box_x = 330;
+    else if(box_x > 330) box_x = -25;
+
     sprites[0]->x = box_x;
     sprites[0]->y = box_y;
 }
 
 void Draw() {
-    FntPrint("Frame : %d", cnt++);
+    FntPrint("Frame : %d", box_x);
     //drawBox(box);
     draw_sprite(sprites[0]);
     draw_sprite(sprites[1]);
