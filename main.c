@@ -54,8 +54,8 @@ void LoadCDData(){
 }
 
 void Start(){
-	box_x = 128;
-	box_y = 128;
+	box_x = 160;
+	box_y = 230;
 
     box = createBox(createColor(255, 255, 255), 128, 128, 164, 164);
 
@@ -83,6 +83,7 @@ void Update(){
 
     padUpdate();
 
+    /*
     if(padCheck(Pad1Up)){
         box_y -= 2;
         box = moveBox(box, box_x, box_y);
@@ -91,7 +92,7 @@ void Update(){
     if(padCheck(Pad1Down)){
         box_y += 2;
         box = moveBox(box, box_x, box_y);
-    }
+    }*/
 
     if(padCheck(Pad1Right)){
         sprites[0]->scalex = 4096;
