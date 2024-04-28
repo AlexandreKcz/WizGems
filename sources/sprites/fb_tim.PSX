@@ -1,7 +1,8 @@
 [TIM Files]
-File_0=C:\Users\myale\Documents\Perso\PSX-Dev\WizGems\DATA\BIBI_O.TIM
-File_1=C:\Users\myale\Documents\Perso\PSX-Dev\WizGems\sources\sprites\BG_BO.TIM
-File_2=C:\Users\myale\Documents\Perso\PSX-Dev\WizGems\sources\sprites\BG_UP.TIM
+File_0=C:\Users\myale\OneDrive\Documents\Projets_Perso\PSX-DEV\WizGems\sources\sprites\BG_BO.TIM
+File_1=C:\Users\myale\OneDrive\Documents\Projets_Perso\PSX-DEV\WizGems\sources\sprites\BG_UP.TIM
+File_2=C:\Users\myale\OneDrive\Documents\Projets_Perso\PSX-DEV\WizGems\sources\sprites\BIBI_OUTLINE.TIM
+File_3=C:\Users\myale\OneDrive\Documents\Projets_Perso\PSX-DEV\WizGems\sources\sprites\BlueGem_Optimised_Bbg.TIM
 [Graphics Mode]
 Width=320
 Height=256

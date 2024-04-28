@@ -11,6 +11,7 @@
 			<file name="BIBI_O.TIM"	type="data"	source="../DATA/BIBI_O.TIM"/>
 			<file name="BG_BO.TIM"	type="data"	source="../DATA/BG_BO.TIM"/>
 			<file name="BG_UP.TIM"	type="data"	source="../DATA/BG_UP.TIM"/>
+			<file name="BLUEGEM.TIM"	type="data"	source="../DATA/BLUEGEM.TIM"/>
 			<dummy sectors="1024"/>
 		</directory_tree>
 	</track>

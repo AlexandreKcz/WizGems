@@ -2,6 +2,7 @@
 #include "controller.h"
 #include "2D.c"
 #include "readCD.c"
+#include <stdio.h>
 
 void Initialize();
 void Start();
@@ -13,9 +14,10 @@ Box box;
 int box_x, box_y;
 
 int cnt = 0;
+int animCnt;
 
 u_long* data[6];
-Sprite* sprites[4];
+Sprite* sprites[5];
 
 int main() {
     Initialize();
@@ -44,11 +46,13 @@ void LoadCDData(){
     cd_read_file("BIBI_O.TIM", &data[1]);
     cd_read_file("BG_BO.TIM", &data[2]);
     cd_read_file("BG_UP.TIM", &data[3]);
+    cd_read_file("BLUEGEM.TIM", &data[4]);
     cd_close();
 
     sprite_create((u_char *)data[1], 128, 128, &sprites[0]);
     sprite_create((u_char *)data[2], 0, 0, &sprites[1]);
     sprite_create((u_char *)data[3], 0, 0, &sprites[2]);
+    sprite_create((u_char *)data[4], 128, 128, &sprites[3]);
 
     printf(" LoadCD Done \n");
 }
@@ -73,6 +77,16 @@ void Start(){
 
     sprites[2]->x = 0;
     sprites[2]->y = 0;
+
+    sprites[3]->x = 128;
+    sprites[3]->y = 128;
+    sprites[3]->w = 16;
+    sprites[3]->h = 16;
+
+    printf("valeur : u : %d,  v : %d\n", sprites[3]->u, sprites[3]->v);
+    //sprites[3]->u = 160;
+    //sprites[3]->v = 0;
+
     //sprites[1]->w = 320;
     //sprites[1]->h = 50;
     //sprites[2]->scalex = 4096;
@@ -81,7 +95,33 @@ void Start(){
 
 void Update(){
 
+    cnt++;
+
     padUpdate();
+
+    if(cnt % 4 == 0){
+        //printf("sprite : %d, tpage : %d\n", sprites[3]->u, sprites[3]->tpage);
+
+        sprites[3]->u += 16;
+
+        if(sprites[3]->u >= 180){
+            sprites[3]->u = 160;
+            sprites[3]->v += 16;
+            if(sprites[3]->v >= 80) sprites[3]->v = 0;
+        }
+
+        //sprites[3]->u += 16;
+        if(sprites[3]->u >= 96){
+            //sprites[3]->u = 0;
+            //sprites[3]->v++;
+            //sprites[3]->tpage++;
+        }
+        /*
+        if (sprites[3]->tpage == 3 && sprites[3]->u >= 960){
+            sprites[3]->tpage = 0;
+            sprites[3]->u = 0;
+        }*/
+    }
 
     /*
     if(padCheck(Pad1Up)){
@@ -122,4 +162,5 @@ void Draw() {
     draw_sprite(sprites[0]);
     draw_sprite(sprites[1]);
     draw_sprite(sprites[2]);
+    draw_sprite(sprites[3]);
 }
