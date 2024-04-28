@@ -2,7 +2,9 @@
 #include "controller.h"
 #include "2D.c"
 #include "readCD.c"
+#include <libmath.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 void Initialize();
 void Start();
@@ -15,6 +17,8 @@ int box_x, box_y;
 
 int cnt = 0;
 int animCnt;
+
+int score = 0;
 
 u_long* data[6];
 Sprite* sprites[5];
@@ -82,6 +86,8 @@ void Start(){
     sprites[3]->y = 128;
     sprites[3]->w = 16;
     sprites[3]->h = 16;
+    sprites[3]->mx = sprites[3]->w / 2;
+    sprites[3]->my = sprites[3]->h / 2;
 
     printf("valeur : u : %d,  v : %d\n", sprites[3]->u, sprites[3]->v);
     //sprites[3]->u = 160;
@@ -109,19 +115,31 @@ void Update(){
             sprites[3]->v += 16;
             if(sprites[3]->v >= 80) sprites[3]->v = 0;
         }
-
-        //sprites[3]->u += 16;
-        if(sprites[3]->u >= 96){
-            //sprites[3]->u = 0;
-            //sprites[3]->v++;
-            //sprites[3]->tpage++;
-        }
-        /*
-        if (sprites[3]->tpage == 3 && sprites[3]->u >= 960){
-            sprites[3]->tpage = 0;
-            sprites[3]->u = 0;
-        }*/
     }
+
+    sprites[3]->y += 2;
+    if(sprites[3]->y >= 240){
+        sprites[3]->y = -30;
+        sprites[3]->x = 10 + ((rand()) % 301);
+    }
+
+    int minDist = 50;
+    int pDist = ((sprites[3]->x + sprites[3]->mx) - (sprites[0]->x + sprites[0]->mx)) * ((sprites[3]->x + sprites[3]->mx) - (sprites[0]->x + sprites[0]->mx)) + ((sprites[3]->y + sprites[3]->my) - (sprites[0]->y + sprites[0]->my)) * ((sprites[3]->y + sprites[3]->my) - (sprites[0]->y + sprites[0]->my));
+    if(pDist < minDist){
+        score++;
+        sprites[3]->y = -30;
+        sprites[3]->x = 10 + ((rand()) % 301);
+    }
+
+    //check sprite collision
+    //minimalDist = pow((double) 5, (double) 2);
+    //minimalDist = 5*5;
+    //double distFromSPlayer = pow((double) (sprites[3]->x - sprites[0]->x),2) + (double) pow((sprites[3]->y - sprites[0]->y),2);
+    /*
+    if(distFromSPlayer < minimalDist){
+        sprites[3]->y = -30;
+        sprites[3]->x = 10 + ((rand()) % 301);
+    }*/
 
     /*
     if(padCheck(Pad1Up)){
@@ -157,10 +175,12 @@ void Update(){
 }
 
 void Draw() {
-    FntPrint("Frame : %d", box_x);
+    //FntPrint("Frame : %d", box_x);
+    FntPrint("Score : %d", score);
     //drawBox(box);
+    draw_sprite(sprites[3]);
     draw_sprite(sprites[0]);
     draw_sprite(sprites[1]);
     draw_sprite(sprites[2]);
-    draw_sprite(sprites[3]);
+    
 }
