@@ -33,3 +33,6 @@ WizGems is a 2D video game development project entirely written in C, specifical
 # Objective:
 
 WizGems aims to provide a solid foundation for 2D game development on PlayStation 1, while offering a concrete example of creating a custom game engine.
+
+
+NB : SYSTEM.CNF Change EOL from CRLF to LF to prevent crash on freepsxboot
