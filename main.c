@@ -90,6 +90,8 @@ void Start(){
     sprites[3]->my = sprites[3]->h / 2;
 
     printf("valeur : u : %d,  v : %d\n", sprites[3]->u, sprites[3]->v);
+
+    printf("Currently running version 1.01 \n");
     //sprites[3]->u = 160;
     //sprites[3]->v = 0;
 

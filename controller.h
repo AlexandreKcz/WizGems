@@ -1,6 +1,7 @@
 #pragma once
 
 #include <libetc.h>
+#include <libapi.h>
 
 int	SysPad, SysPadT;
 #define	padCheck(_p_)	(SysPad & (_p_))
@@ -34,8 +35,16 @@ int	SysPad, SysPadT;
 #define Pad2Start		_PAD(1, PADstart)
 #define Pad2Select		_PAD(1, PADselect)
 
+static unsigned char pad_buff[2][34];
+
 void initializePad() {
-	PadInit(0);
+	//PadInit(0); Depreciated
+
+	InitPAD(&pad_buff[0][0], 34, &pad_buff[1][0], 34);
+
+	StartPAD();
+
+	ChangeClearPAD(1);
 }
 
 void padReset(void) {
@@ -44,7 +53,22 @@ void padReset(void) {
 }
 
 void padUpdate(void){
+	/* Depreciated
 	int	pad = PadRead(0);
 	SysPadT = pad & (pad ^ SysPad);
 	SysPad = pad;
+	*/
+
+	int pad = 0;
+
+	if(pad_buff[0][0] == 0) {
+		pad |= ~((pad_buff[0][2] << 8) | pad_buff[0][3]) & 0xFFFF;
+	}
+
+	if(pad_buff[1][0] == 0) { //For controller 2
+        pad |= (~((pad_buff[1][2] << 8) | pad_buff[1][3]) & 0xFFFF) << 16;
+    }
+
+	SysPadT = pad & (pad ^ SysPad);
+    SysPad = pad;
 }
